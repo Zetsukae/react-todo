@@ -1,0 +1,70 @@
+.todo-sorts {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 55px;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid #545F71;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.todo-sorts p {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #545f71;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: left;
+}
+
+.todo-sorts .option {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  color: #545f71;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.todo-sorts .option input {
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: #545f71;
+}
+
+.todo-sorts .sort-option {
+  margin-left: 2px;
+  padding-left: 20px;
+  border-left: 1px solid #8993a3;
+}
+
+.todo-sorts .sort-button {
+  display: flex;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #545F71;
+  cursor: pointer;
+}
+
+.todo-sorts .sort-button:hover {
+  background-color: #7d8798;
+}
+
+.todo-sorts .sort-button img {
+  width: 24px;
+  height: 24px;
+}

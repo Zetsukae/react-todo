@@ -1,0 +1,36 @@
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 8px 8px;
+  border: 2px solid #545F71;
+  border-radius: 10px;
+}
+
+.todo-list ul {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todo-list .delete-all-button {
+  flex: 0 0 auto;
+  width: 98px;
+  min-width: 98px;
+  height: 36px;
+  margin: 12px auto 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #545F71;
+  color: #fff;
+  cursor: pointer;
+}
+
+.todo-list .delete-all-button:hover {
+  background-color: #7d8798;
+}

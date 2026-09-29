@@ -1,5 +1,6 @@
 import TodoItem from './TodoItem';
 import type { Todo } from './TodoItem';
+import './styles/TodoList.css';
 
 const TodoList = ({ todos }: { todos: Todo[] }) => {
     return (
@@ -9,6 +10,9 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
                     <TodoItem key={todo.id} todo={todo} />
                 ))}
             </ul>
+            <button className="delete-all-button">
+                Delete All
+            </button>
         </section>
     );
 };

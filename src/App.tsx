@@ -6,7 +6,8 @@ import TodoSorts from './components/TodoSorts';
 import type { Todo } from './components/TodoItem';
 
 const todos: Todo[] = [
-  { id: 1, title: 'Create the component structure', dueDate: '2026-09-30', completed: true },
+  { id: 1, title: 'Create the component structure', due_date: '28/09/26', done: true },
+  { id: 2, title: 'Implement a theme chooser', content: 'Create a theme chooser component, this will allow users to switch between different themes.', due_date: '29/09/26', done: false },
 ];
 
 const App = () => {
