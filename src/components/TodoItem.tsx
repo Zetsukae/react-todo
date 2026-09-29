@@ -1,18 +1,28 @@
+import './styles/TodoItem.css';
+
 export type Todo = {
     id: number;
     title: string;
-    dueDate: string;
-    completed: boolean;
+    content?: string;
+    due_date: string;
+    done: boolean;
 };
 
 const TodoItem = ({ todo }: { todo: Todo }) => {
     return (
         <li className="todo-item">
-            <input type="checkbox" checked={todo.completed} readOnly />
-            <div className="due-date">{todo.dueDate}</div>
-            <span>{todo.title}</span>
-            <button className="edit-button">Edit</button>
-            <button className="delete-button">Delete</button>
+            <input type="checkbox" checked={todo.done} readOnly />
+            <div className="due-date">{todo.due_date}</div>
+            <div className="todo-content">
+                <span>{todo.title}</span>
+                {todo.content && <p>{todo.content}</p>}
+            </div>
+            <button className="edit-button item-button">
+                <img src="/icons/components/edit.svg" alt="Edit" />
+            </button>
+            <button className="delete-button item-button">
+                <img src="/icons/components/delete.svg" alt="Delete" />
+            </button>
         </li>
     );
 };

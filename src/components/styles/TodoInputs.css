@@ -1,0 +1,74 @@
+.todo-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 17px 12px;
+  border: 2px solid #545F71;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.todo-inputs form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px;
+  gap: 8px;
+  width: 100%;
+}
+
+.todo-inputs input,
+.todo-inputs textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #7d8798;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #545f71;
+  font: inherit;
+  font-size: 14px;
+}
+
+.todo-inputs input {
+  height: 44px;
+  padding: 0 10px;
+}
+
+.todo-inputs textarea {
+  grid-column: 1 / -1;
+  min-height: 34px;
+  max-height: 415px;
+  padding: 7px 10px;
+  line-height: 18px;
+  resize: vertical;
+  text-align: center;
+}
+
+.todo-inputs input::placeholder,
+.todo-inputs textarea::placeholder {
+  color: #9aa8c0;
+  opacity: 1;
+}
+
+.todo-inputs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #545F71;
+  cursor: pointer;
+}
+
+.todo-inputs button:hover {
+  background-color: #7d8798;
+}
+
+.todo-inputs .add-button img {
+  width: 22px;
+  height: 22px;
+}
