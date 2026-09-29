@@ -1,11 +1,7 @@
 import TodoItem from './TodoItem';
 import type { Todo } from './TodoItem';
 
-type TodoListProps = {
-    todos: Todo[];
-};
-
-const TodoList = ({ todos }: TodoListProps) => {
+const TodoList = ({ todos }: { todos: Todo[] }) => {
     return (
         <section className="todo-list">
             <ul>

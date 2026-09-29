@@ -5,11 +5,7 @@ export type Todo = {
     completed: boolean;
 };
 
-type TodoItemProps = {
-    todo: Todo;
-};
-
-const TodoItem = ({ todo }: TodoItemProps) => {
+const TodoItem = ({ todo }: { todo: Todo }) => {
     return (
         <li className="todo-item">
             <input type="checkbox" checked={todo.completed} readOnly />
