@@ -1,9 +1,11 @@
 const TodoInputs = () => {
     return (
         <section className="todo-inputs">
-            <input type="text" placeholder="Add a new todo..." />
-            <input type="date" />
-            <button className="add-button">Add</button>
+          <form>
+              <input type="text" placeholder="Add a new todo..." />
+              <input type="date" />
+              <button type="submit" className="add-button">Add</button>
+              </form>
         </section>
     )
 }
