@@ -24,9 +24,6 @@ const TodoSorts = () => {
                 <input type="checkbox" name="sort" value="desc" />
                 <span>Due-date</span>
             </label>
-            <button className="sort-button">
-                <img src="/icons/components/confirm.svg" alt="Sort" />
-            </button>
         </section>
     )
 }
