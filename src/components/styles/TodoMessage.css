@@ -1,0 +1,14 @@
+.todo-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 826px;
+  padding: 10px;
+  border: 2px solid #545F71;
+  border-radius: 10px;
+  background-color: #ffffff;
+  margin: 17px 0;
+}

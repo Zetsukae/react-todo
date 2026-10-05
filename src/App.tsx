@@ -1,10 +1,11 @@
-import { Suspense, use } from 'react';
+import { Component, Suspense, use, type ReactNode } from 'react';
 import './App.css';
 
 import TodoInputs from './components/TodoInputs';
 import TodoList from './components/TodoList';
 import TodoSorts from './components/TodoSorts';
 import { getTodos } from './api/services/todoService';
+import TodoMessage from './components/TodoMessage';
 
 const todosPromise = getTodos();
 
@@ -13,6 +14,25 @@ const TodoListContent = () => {
   return <TodoList todos={todos} />;
 };
 
+class TodoErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <TodoMessage />;
+    }
+
+    return this.props.children;
+  }
+}
+
 const App = () => {
   return (
     <div className="content">
@@ -20,9 +40,11 @@ const App = () => {
       <section className="todo-container">
         <TodoInputs />
         <TodoSorts />
-        <Suspense fallback={<div className="loader" role="status" aria-label="Loading todos" />}>
-          <TodoListContent />
-        </Suspense>
+        <TodoErrorBoundary>
+          <Suspense fallback={<div className="loader" role="status" aria-label="Loading todos" />}>
+            <TodoListContent />
+          </Suspense>
+        </TodoErrorBoundary>
       </section>
     </div>
   );
