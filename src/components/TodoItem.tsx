@@ -1,12 +1,5 @@
 import './styles/TodoItem.css';
-
-export type Todo = {
-    id: number;
-    title: string;
-    content?: string;
-    due_date: string;
-    done: boolean;
-};
+import type { Todo } from '../api/types/todo';
 
 const TodoItem = ({ todo }: { todo: Todo }) => {
     return (
