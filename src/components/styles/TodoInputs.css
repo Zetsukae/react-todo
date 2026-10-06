@@ -14,7 +14,7 @@
 .todo-inputs textarea:focus {
   outline: none;
   border-color: #8d69b6;
-  border-width: 1px;
+  border-width: 2px;
   animation: focus-wave 1.8s ease-out infinite;
 }
 
