@@ -1,23 +1,41 @@
+import { useEffect, useState } from 'react';
 import './App.css';
 
 import TodoInputs from './components/TodoInputs';
 import TodoList from './components/TodoList';
 import TodoSorts from './components/TodoSorts';
-import type { Todo } from './components/TodoItem';
-
-const todos: Todo[] = [
-  { id: 1, title: 'Create the component structure', due_date: '28/09/26', done: true },
-  { id: 2, title: 'Implement a theme chooser', content: 'Create a theme chooser component, this will allow users to switch between different themes.', due_date: '29/09/26', done: false },
-];
+import { getTodos } from './api/services/todoService';
+import type { TodoList as TodoItems } from './api/types/todo';
 
 const App = () => {
+  const [todos, setTodos] = useState<TodoItems | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTodos = async () => {
+      try {
+        setTodos(await getTodos());
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadTodos();
+  }, []);
+
   return (
     <div className="content">
       <h1>React*Todo</h1>
       <section className="todo-container">
         <TodoInputs />
         <TodoSorts />
-        <TodoList todos={todos} />
+        {isLoading ? (
+          <div className="loader" role="status" aria-label="Loading todos" />
+        ) : todos ? (
+          <TodoList todos={todos} />
+        ) : null}
       </section>
     </div>
   );

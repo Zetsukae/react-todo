@@ -12,6 +12,11 @@
   background-color: #fff;
 }
 
+.todo-item:hover {
+  border-color: #545f71;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .todo-item p {
   margin: 0;
   opacity: 0.7;
