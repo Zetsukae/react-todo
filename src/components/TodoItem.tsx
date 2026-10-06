@@ -10,9 +10,6 @@ const TodoItem = ({ todo }: { todo: Todo }) => {
                 <span>{todo.title}</span>
                 {todo.content && <p>{todo.content}</p>}
             </div>
-            <button className="edit-button item-button">
-                <img src="icons/components/edit.svg" alt="Edit" />
-            </button>
             <button className="delete-button item-button">
                 <img src="icons/components/delete.svg" alt="Delete" />
             </button>
