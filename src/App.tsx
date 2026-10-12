@@ -12,17 +12,22 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     const loadTodos = async () => {
       try {
-        setTodos(await getTodos());
+        setTodos(await getTodos(controller.signal));
       } catch (error) {
-        console.error('Error fetching todos:', error);
+        if (!controller.signal.aborted) {
+          console.error('Error fetching todos:', error);
+        }
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
-
     void loadTodos();
+    return () => controller.abort();
   }, []);
 
   return (
