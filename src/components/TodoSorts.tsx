@@ -5,7 +5,7 @@ const TodoSorts = () => {
         <section className="todo-sorts">
             <p>Filter &amp; Sorting:</p>
             <label className="option">
-                <input type="radio" name="status" value="all" checked />
+                <input type="radio" name="status" value="all" defaultChecked />
                 <span>All</span>
             </label>
             <label className="option">

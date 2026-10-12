@@ -1,18 +1,20 @@
 import TodoItem from './TodoItem';
-import type { Todo } from './TodoItem';
+import type { TodoList as TodoItems } from '../api/types/todo';
 import './styles/TodoList.css';
 
-const TodoList = ({ todos }: { todos: Todo[] }) => {
+const TodoList = ({ todos }: { todos: TodoItems }) => {
     return (
         <section className="todo-list">
             <ul>
-                {todos.map((todo) => (
-                    <TodoItem key={todo.id} todo={todo} />
-                ))}
+                {todos.length === 0 ? (
+                    <li className="empty-state">No tasks to complete.</li>
+                ) : (
+                    todos.map((todo) => <TodoItem key={todo.id} todo={todo} />)
+                )}
             </ul>
-            <button className="delete-all-button">
-                Delete All
-            </button>
+            {todos.length > 0 && (
+                <button className="delete-all-button">Delete All</button>
+            )}
         </section>
     );
 };
