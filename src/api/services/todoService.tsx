@@ -6,7 +6,12 @@ export const getTodos = async (signal?: AbortSignal): Promise<TodoList> => {
     try {
         const response = await fetch(TODOS_URL, {
             headers: { Accept: 'application/json' },
-            signal,
+    } catch (error) {
+        if (!(error instanceof Error && error.name === 'AbortError')) {
+            console.error('Error fetching todos:', error);
+        }
+        throw error;
+    }
         });
 
         if (!response.ok) {
