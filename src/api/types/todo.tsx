@@ -1,9 +1,11 @@
-export interface Todo {
+export type TodoCreate = { title: string } &
+    Partial<{ content: string | null; due_date: string | null }>;
+
+export type Todo = TodoCreate & {
     id: number;
-    title: string;
-    content?: string;
-    due_date: string;
+    content: string | null;
+    due_date: string | null;
     done: boolean;
-}
+};
 
 export type TodoList = Todo[];
