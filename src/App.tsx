@@ -39,7 +39,12 @@ const App = () => {
 
   const handleCreateTodo = async (todo: TodoCreate): Promise<Todo> => {
     const createdTodo = await createTodo(todo);
-    setTodos((currentTodos) => [...(currentTodos ?? []), createdTodo]);
+    setTodos((currentTodos) => {
+      const existingTodos = currentTodos ?? [];
+      return existingTodos.some((todo) => todo.id === createdTodo.id)
+        ? existingTodos
+        : [...existingTodos, createdTodo];
+    });
     return createdTodo;
   };
 
