@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import type { Todo, TodoCreate } from '../api/types/todo';
 import './styles/TodoInputs.css';
 
@@ -10,7 +10,7 @@ const TodoInputs = ({ onCreate }: { onCreate: (todo: TodoCreate) => Promise<Todo
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         const trimmedTitle = title.trim();
         if (!trimmedTitle || isSubmitting) {
