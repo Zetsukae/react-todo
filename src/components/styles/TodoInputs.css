@@ -97,7 +97,19 @@
   background-color: #7d8798;
 }
 
+.todo-inputs button:disabled {
+  background-color: #c0c4cc;
+  cursor: not-allowed;
+}
+
 .todo-inputs .add-button img {
   width: 22px;
   height: 22px;
+}
+
+.todo-inputs .todo-input-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #b42318;
+  font-size: 14px;
 }
