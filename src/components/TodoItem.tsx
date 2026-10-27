@@ -20,6 +20,8 @@ const TodoItem = ({
             await onDelete(todo.id);
             setIsDeleting(true);
         } catch {
+            console.error('Failed to delete todo item with id:', todo.id);
+        } finally {
             setIsPending(false);
         }
     };
