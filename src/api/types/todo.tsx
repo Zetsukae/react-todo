@@ -8,4 +8,6 @@ export type Todo = TodoCreate & {
     done: boolean;
 };
 
+export type TodoUpdate = Partial<Pick<Todo, 'title' | 'content' | 'due_date' | 'done'>>;
+
 export type TodoList = Todo[];

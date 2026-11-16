@@ -3,7 +3,11 @@ import type { SubmitEvent } from 'react';
 import type { Todo, TodoCreate } from '../api/types/todo';
 import './styles/TodoInputs.css';
 
-const TodoInputs = ({ onCreate }: { onCreate: (todo: TodoCreate) => Promise<Todo> }) => {
+type TodoInputsProps = {
+    onCreate: (todo: TodoCreate) => Promise<Todo>;
+};
+
+const TodoInputs = ({ onCreate }: TodoInputsProps) => {
     const [title, setTitle] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [description, setDescription] = useState('');
