@@ -1,31 +1,69 @@
 import './styles/TodoSorts.css';
 
-const TodoSorts = () => {
-    return (
-        <section className="todo-sorts">
-            <p>Filter &amp; Sorting:</p>
-            <label className="option">
-                <input type="radio" name="status" value="all" defaultChecked />
-                <span>All</span>
-            </label>
-            <label className="option">
-                <input type="radio" name="status" value="done" />
-                <span>Done</span>
-            </label>
-            <label className="option">
-                <input type="radio" name="status" value="undone" />
-                <span>Undone</span>
-            </label>
-            <label className="option sort-option">
-                <input type="checkbox" name="sort" value="asc" />
-                <span>Name (A-Z)</span>
-            </label>
-            <label className="option">
-                <input type="checkbox" name="sort" value="desc" />
-                <span>Due-date</span>
-            </label>
-        </section>
-    )
-}
+export type TodoStatusFilter = 'all' | 'done' | 'undone';
+export type TodoSortOrder = 'default' | 'name' | 'due-date';
+
+type TodoSortsProps = {
+  statusFilter: TodoStatusFilter;
+  sortOrder: TodoSortOrder;
+  onStatusFilterChange: (filter: TodoStatusFilter) => void;
+  onSortOrderChange: (sortOrder: TodoSortOrder) => void;
+};
+
+const TodoSorts = ({
+  statusFilter,
+  sortOrder,
+  onStatusFilterChange,
+  onSortOrderChange,
+}: TodoSortsProps) => {
+  return (
+    <section className="todo-sorts" aria-label="Todo filters and sorting">
+      <div className="todo-sort-group" role="group" aria-label="Show">
+        <span className="todo-sort-label">Show</span>
+        {(['all', 'undone', 'done'] as const).map((filter) => (
+          <label
+            className={`option${statusFilter === filter ? ' active' : ''}`}
+            key={filter}
+          >
+            <input
+              type="radio"
+              name="status"
+              value={filter}
+              checked={statusFilter === filter}
+              onChange={() => onStatusFilterChange(filter)}
+            />
+            <span>
+              {filter === 'all' ? 'All' : filter === 'done' ? 'Done' : 'Undone'}
+            </span>
+          </label>
+        ))}
+      </div>
+      <div className="todo-sort-group" role="group" aria-label="Sort by">
+        <span className="todo-sort-label">Sort by</span>
+        {(
+          [
+            ['default', 'Default order'],
+            ['name', 'Name (A-Z)'],
+            ['due-date', 'Due date (soonest)'],
+          ] as const
+        ).map(([order, label]) => (
+          <label
+            className={`option${sortOrder === order ? ' active' : ''}`}
+            key={order}
+          >
+            <input
+              type="radio"
+              name="sort-order"
+              value={order}
+              checked={sortOrder === order}
+              onChange={() => onSortOrderChange(order)}
+            />
+            <span>{label}</span>
+          </label>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export default TodoSorts;

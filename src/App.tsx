@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 
 import TodoInputs from './components/TodoInputs';
 import TodoList from './components/TodoList';
 import TodoSorts from './components/TodoSorts';
+import type { TodoSortOrder, TodoStatusFilter } from './components/TodoSorts';
 import { createTodo, deleteTodo, getTodos, updateTodo } from './api/services/todoService';
 import type { Todo, TodoCreate, TodoList as TodoItems, TodoUpdate } from './api/types/todo';
 
 const App = () => {
   const [todos, setTodos] = useState<TodoItems | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<TodoStatusFilter>('all');
+  const [sortOrder, setSortOrder] = useState<TodoSortOrder>('default');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -63,6 +66,34 @@ const App = () => {
     setTodos((currentTodos) => currentTodos?.filter((todo) => todo.id !== id) ?? null);
   };
 
+  const displayedTodos = useMemo(() => {
+    const filteredTodos = (todos ?? []).filter((todo) => {
+      if (statusFilter === 'done') {
+        return todo.done;
+      }
+      if (statusFilter === 'undone') {
+        return !todo.done;
+      }
+      return true;
+    });
+
+    return filteredTodos.sort((first, second) => {
+      if (sortOrder === 'name') {
+        return first.title.localeCompare(second.title, undefined, { sensitivity: 'base' });
+      }
+      if (sortOrder === 'due-date') {
+        if (!first.due_date) {
+          return second.due_date ? 1 : 0;
+        }
+        if (!second.due_date) {
+          return -1;
+        }
+        return first.due_date.localeCompare(second.due_date);
+      }
+      return 0;
+    });
+  }, [todos, statusFilter, sortOrder]);
+
   return (
     <>
       <div className="app-background" aria-hidden="true">
@@ -76,12 +107,18 @@ const App = () => {
         <h1>React*Todo</h1>
         <section className="todo-container">
           <TodoInputs onCreate={handleCreateTodo} />
-          <TodoSorts />
+          <TodoSorts
+            statusFilter={statusFilter}
+            sortOrder={sortOrder}
+            onStatusFilterChange={setStatusFilter}
+            onSortOrderChange={setSortOrder}
+          />
           {isLoading ? (
             <div className="loader" role="status" aria-label="Loading todos" />
           ) : todos ? (
             <TodoList
-              todos={todos}
+              todos={displayedTodos}
+              statusFilter={statusFilter}
               onUpdate={handleUpdateTodo}
               onDelete={handleDeleteTodo}
               onDeleted={handleTodoDeleted}
