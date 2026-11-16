@@ -4,8 +4,8 @@ import './App.css';
 import TodoInputs from './components/TodoInputs';
 import TodoList from './components/TodoList';
 import TodoSorts from './components/TodoSorts';
-import { createTodo, deleteTodo, getTodos } from './api/services/todoService';
-import type { Todo, TodoCreate, TodoList as TodoItems } from './api/types/todo';
+import { createTodo, deleteTodo, getTodos, updateTodo } from './api/services/todoService';
+import type { Todo, TodoCreate, TodoList as TodoItems, TodoUpdate } from './api/types/todo';
 
 const App = () => {
   const [todos, setTodos] = useState<TodoItems | null>(null);
@@ -49,12 +49,14 @@ const App = () => {
   };
 
   const handleDeleteTodo = async (id: number): Promise<void> => {
-    try {
-      await deleteTodo(id);
-    } catch (error) {
-      console.error('Unable to delete todo:', error);
-      throw error;
-    }
+    await deleteTodo(id);
+  };
+
+  const handleUpdateTodo = async (id: number, changes: TodoUpdate): Promise<void> => {
+    const updatedTodo = await updateTodo(id, changes);
+    setTodos((currentTodos) =>
+      currentTodos?.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)) ?? null,
+    );
   };
 
   const handleTodoDeleted = (id: number) => {
@@ -78,7 +80,12 @@ const App = () => {
           {isLoading ? (
             <div className="loader" role="status" aria-label="Loading todos" />
           ) : todos ? (
-            <TodoList todos={todos} onDelete={handleDeleteTodo} onDeleted={handleTodoDeleted} />
+            <TodoList
+              todos={todos}
+              onUpdate={handleUpdateTodo}
+              onDelete={handleDeleteTodo}
+              onDeleted={handleTodoDeleted}
+            />
           ) : null}
         </section>
       </main>
