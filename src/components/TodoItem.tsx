@@ -25,6 +25,7 @@ const TodoItem = ({ todo, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
     const [content, setContent] = useState(todo.content ?? '');
     const [dueDate, setDueDate] = useState(todo.due_date ?? '');
     const [error, setError] = useState('');
+    const [completionError, setCompletionError] = useState('');
     const editFormRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
@@ -85,10 +86,12 @@ const TodoItem = ({ todo, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
     };
 
     const handleDoneChange = async (done: boolean) => {
+        setCompletionError('');
         setIsUpdating(true);
         try {
             await onUpdate(todo.id, { done });
         } catch {
+            setCompletionError('Unable to update completion status. Please try again.');
             console.error('Failed to update todo item with id:', todo.id);
         } finally {
             setIsUpdating(false);
@@ -184,13 +187,11 @@ const TodoItem = ({ todo, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
                                 autoFocus
                                 disabled={isUpdating}
                             />
-                            <input
+                            <textarea
                                 className="todo-edit-description"
-                                type="text"
                                 aria-label="Description"
                                 value={content}
                                 onChange={(event) => setContent(event.currentTarget.value)}
-                                onKeyDown={handleEditKeyDown}
                                 placeholder="Add a description"
                                 disabled={isUpdating}
                             />
@@ -261,6 +262,11 @@ const TodoItem = ({ todo, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
                     >
                         <img src="icons/components/trash.svg" alt="" />
                     </button>
+                    {completionError && (
+                        <p className="todo-completion-error" role="alert">
+                            {completionError}
+                        </p>
+                    )}
                 </>
             )}
         </li>

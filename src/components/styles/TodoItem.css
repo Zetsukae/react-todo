@@ -190,6 +190,8 @@
 
 .todo-edit-description {
   width: 100%;
+  min-height: 56px;
+  resize: vertical;
   font-size: 12px;
   text-align: center;
 }
@@ -219,6 +221,14 @@
   margin: 0;
   color: #a4262c;
   font-size: 12px;
+}
+
+.todo-completion-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #a4262c;
+  font-size: 12px;
+  text-align: center;
 }
 
 .item-button {
