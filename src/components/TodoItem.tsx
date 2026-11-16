@@ -1,9 +1,40 @@
+import { useState } from 'react';
 import './styles/TodoItem.css';
 import type { Todo } from '../api/types/todo';
 
-const TodoItem = ({ todo }: { todo: Todo }) => {
+const TodoItem = ({
+    todo,
+    onDelete,
+    onDeleted,
+}: {
+    todo: Todo;
+    onDelete: (id: number) => Promise<void>;
+    onDeleted: (id: number) => void;
+}) => {
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isPending, setIsPending] = useState(false);
+
+    const handleDelete = async () => {
+        setIsPending(true);
+        try {
+            await onDelete(todo.id);
+            setIsDeleting(true);
+        } catch {
+            console.error('Failed to delete todo item with id:', todo.id);
+        } finally {
+            setIsPending(false);
+        }
+    };
+
     return (
-        <li className="todo-item">
+        <li
+            className={`todo-item${isDeleting ? ' todo-item--deleting' : ''}`}
+            onAnimationEnd={(event) => {
+                if (isDeleting && event.animationName === 'todo-item-exit') {
+                    onDeleted(todo.id);
+                }
+            }}
+        >
             <label>
                 <input type="checkbox" checked={todo.done} readOnly />
                 {todo.due_date && <div className="due-date">{todo.due_date}</div>}
@@ -12,7 +43,7 @@ const TodoItem = ({ todo }: { todo: Todo }) => {
                     {todo.content && <p>{todo.content}</p>}
                 </div>
             </label>
-            <button className="delete-button item-button">
+            <button className="delete-button item-button" onClick={() => void handleDelete()} disabled={isPending}>
                 <img src="icons/components/delete.svg" alt="Delete" />
             </button>
         </li>

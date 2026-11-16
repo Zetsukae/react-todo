@@ -4,7 +4,7 @@ import './App.css';
 import TodoInputs from './components/TodoInputs';
 import TodoList from './components/TodoList';
 import TodoSorts from './components/TodoSorts';
-import { createTodo, getTodos } from './api/services/todoService';
+import { createTodo, deleteTodo, getTodos } from './api/services/todoService';
 import type { Todo, TodoCreate, TodoList as TodoItems } from './api/types/todo';
 
 const App = () => {
@@ -48,19 +48,41 @@ const App = () => {
     return createdTodo;
   };
 
+  const handleDeleteTodo = async (id: number): Promise<void> => {
+    try {
+      await deleteTodo(id);
+    } catch (error) {
+      console.error('Unable to delete todo:', error);
+      throw error;
+    }
+  };
+
+  const handleTodoDeleted = (id: number) => {
+    setTodos((currentTodos) => currentTodos?.filter((todo) => todo.id !== id) ?? null);
+  };
+
   return (
-    <div className="content">
-      <h1>React*Todo</h1>
-      <section className="todo-container">
-        <TodoInputs onCreate={handleCreateTodo} />
-        <TodoSorts />
-        {isLoading ? (
-          <div className="loader" role="status" aria-label="Loading todos" />
-        ) : todos ? (
-          <TodoList todos={todos} />
-        ) : null}
-      </section>
-    </div>
+    <>
+      <div className="app-background" aria-hidden="true">
+        <div className="squares">
+          {Array.from({ length: 10 }, (_, index) => (
+            <span className="square" key={index} />
+          ))}
+        </div>
+      </div>
+      <main className="content">
+        <h1>React*Todo</h1>
+        <section className="todo-container">
+          <TodoInputs onCreate={handleCreateTodo} />
+          <TodoSorts />
+          {isLoading ? (
+            <div className="loader" role="status" aria-label="Loading todos" />
+          ) : todos ? (
+            <TodoList todos={todos} onDelete={handleDeleteTodo} onDeleted={handleTodoDeleted} />
+          ) : null}
+        </section>
+      </main>
+    </>
   );
 };
 
