@@ -1,22 +1,29 @@
 .todo-sorts {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  min-height: 55px;
-  gap: 12px;
-  padding: 12px;
+  gap: 8px 12px;
+  padding: 0 12px;
   background-color: transparent;
 }
 
-.todo-sorts p {
+.todo-sort-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.todo-sort-label {
   flex: 0 0 auto;
-  margin: 0;
+  margin-right: 3px;
   color: #545f71;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 600;
   text-align: left;
 }
 
@@ -24,22 +31,35 @@
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
+  padding: 4px 7px;
+  border: 1px solid transparent;
+  border-radius: 6px;
   color: #545f71;
-  font-size: 16px;
+  font-size: 14px;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.todo-sorts .option.active {
+  border-color: #7d8798;
+  background-color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
 }
 
 .todo-sorts .option input {
   box-sizing: border-box;
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
   margin: 0;
   accent-color: #545f71;
 }
 
-.todo-sorts .sort-option {
-  margin-left: 2px;
-  padding-left: 40px;
-  border-left: 1px solid #8993a3;
+@media (max-width: 600px) {
+  .todo-sorts {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 4px;
+  }
 }
