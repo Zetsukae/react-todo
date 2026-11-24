@@ -12,6 +12,15 @@ type TodoListProps = {
 };
 
 const TodoList = ({ todos, statusFilter, onUpdate, onDelete, onDeleted }: TodoListProps) => {
+    const visibleTodos = todos.filter((todo) => {
+        if (statusFilter === 'done') {
+            return todo.done;
+        }
+        if (statusFilter === 'undone') {
+            return !todo.done;
+        }
+        return true;
+    });
     const emptyMessage = {
         all: 'No tasks yet.',
         done: 'No completed tasks.',
@@ -21,21 +30,21 @@ const TodoList = ({ todos, statusFilter, onUpdate, onDelete, onDeleted }: TodoLi
     return (
         <section className="todo-list">
             <ul>
-                {todos.length === 0 ? (
+                {visibleTodos.length === 0 && (
                     <li className="empty-state">{emptyMessage}</li>
-                ) : (
-                    todos.map((todo) => (
-                        <TodoItem
-                            key={todo.id}
-                            todo={todo}
-                            onUpdate={onUpdate}
-                            onDelete={onDelete}
-                            onDeleted={onDeleted}
-                        />
-                    ))
                 )}
+                {todos.map((todo) => (
+                    <TodoItem
+                        key={todo.id}
+                        todo={todo}
+                        statusFilter={statusFilter}
+                        onUpdate={onUpdate}
+                        onDelete={onDelete}
+                        onDeleted={onDeleted}
+                    />
+                ))}
             </ul>
-            {todos.length > 0 && (
+            {visibleTodos.length > 0 && (
                 <button className="delete-all-button">Delete All</button>
             )}
         </section>

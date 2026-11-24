@@ -53,6 +53,7 @@ const App = () => {
 
   const handleDeleteTodo = async (id: number): Promise<void> => {
     await deleteTodo(id);
+    setTodos((currentTodos) => currentTodos?.filter((todo) => todo.id !== id) ?? null);
   };
 
   const handleUpdateTodo = async (id: number, changes: TodoUpdate): Promise<void> => {
@@ -66,18 +67,8 @@ const App = () => {
     setTodos((currentTodos) => currentTodos?.filter((todo) => todo.id !== id) ?? null);
   };
 
-  const displayedTodos = useMemo(() => {
-    const filteredTodos = (todos ?? []).filter((todo) => {
-      if (statusFilter === 'done') {
-        return todo.done;
-      }
-      if (statusFilter === 'undone') {
-        return !todo.done;
-      }
-      return true;
-    });
-
-    return filteredTodos.sort((first, second) => {
+  const sortedTodos = useMemo(() => {
+    return [...(todos ?? [])].sort((first, second) => {
       if (sortOrder === 'name') {
         return first.title.localeCompare(second.title, undefined, { sensitivity: 'base' });
       }
@@ -92,7 +83,7 @@ const App = () => {
       }
       return 0;
     });
-  }, [todos, statusFilter, sortOrder]);
+  }, [todos, sortOrder]);
 
   return (
     <>
@@ -117,7 +108,7 @@ const App = () => {
             <div className="loader" role="status" aria-label="Loading todos" />
           ) : todos ? (
             <TodoList
-              todos={displayedTodos}
+              todos={sortedTodos}
               statusFilter={statusFilter}
               onUpdate={handleUpdateTodo}
               onDelete={handleDeleteTodo}
