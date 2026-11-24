@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, MouseEvent, SubmitEvent } from 'react';
 import './styles/TodoItem.css';
 import type { Todo, TodoUpdate } from '../api/types/todo';
+import type { TodoStatusFilter } from './TodoSorts';
 
 type TodoItemProps = {
     todo: Todo;
+    statusFilter: TodoStatusFilter;
     onUpdate: (id: number, changes: TodoUpdate) => Promise<void>;
     onDelete: (id: number) => Promise<void>;
     onDeleted: (id: number) => void;
@@ -15,7 +17,7 @@ const formatDueDate = (dueDate: string): string => {
     return `${day}/${month}/${year.slice(-2)}`;
 };
 
-const TodoItem = ({ todo, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
+const TodoItem = ({ todo, statusFilter, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
     const checkboxRef = useRef<HTMLInputElement>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isPending, setIsPending] = useState(false);
@@ -133,6 +135,14 @@ const TodoItem = ({ todo, onUpdate, onDelete, onDeleted }: TodoItemProps) => {
             event.currentTarget.form?.requestSubmit();
         }
     };
+
+    const matchesStatusFilter =
+        statusFilter === 'all' ||
+        (statusFilter === 'done' && todo.done) ||
+        (statusFilter === 'undone' && !todo.done);
+    if (!matchesStatusFilter && !isEditing) {
+        return null;
+    }
 
     return (
         <li

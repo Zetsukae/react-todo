@@ -1,9 +1,9 @@
 .todo-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: 16px max-content minmax(0, 1fr) 29px;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   box-sizing: border-box;
   width: 100%;
   min-height: 51px;
@@ -32,6 +32,13 @@
   display: flex;
 }
 
+.todo-item--editing .todo-checkbox {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+}
+
 .todo-item:hover {
   border-color: #545f71;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -47,17 +54,12 @@
 }
 
 .todo-checkbox {
-  position: absolute;
-  top: 50%;
-  left: 8px;
   display: flex;
   flex: 0 0 16px;
   align-items: center;
   justify-content: center;
   width: 16px;
   height: 16px;
-  margin: 0 2px 0 0;
-  transform: translateY(-50%);
 }
 
 .todo-checkbox input {
@@ -81,10 +83,13 @@
 }
 
 .todo-content {
-  grid-column: 1 / -1;
+  grid-column: 3;
   box-sizing: border-box;
   width: 100%;
-  padding: 0 52px;
+}
+
+.todo-content .todo-edit-trigger {
+  max-width: max(0px, calc(100% - 40px));
 }
 
 .todo-edit-trigger {
@@ -130,9 +135,7 @@
 }
 
 .due-date {
-  position: absolute;
-  top: 50%;
-  left: 34px;
+  grid-column: 2;
   flex: 0 0 auto;
   padding: 5px 6px;
   border: 1px solid #7d8798;
@@ -141,7 +144,6 @@
   color: #545f71;
   font-size: 14px;
   white-space: nowrap;
-  transform: translateY(-50%);
 }
 
 .due-date:hover:not(:disabled) {
@@ -207,10 +209,8 @@
 }
 
 .todo-item > .delete-button {
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
+  grid-column: 4;
+  justify-self: end;
 }
 
 .todo-edit-error {
@@ -261,6 +261,7 @@
 
 @media (max-width: 600px) {
   .todo-item {
+    grid-template-columns: minmax(0, 1fr);
     align-items: flex-start;
     min-height: 86px;
     padding-top: 12px;
@@ -268,22 +269,34 @@
   }
 
   .todo-checkbox {
+    position: absolute;
+    top: 19px;
+    left: 8px;
+    transform: none;
+  }
+
+  .todo-item--editing .todo-checkbox {
     top: 19px;
     transform: none;
   }
 
   .due-date {
+    position: absolute;
     top: 10px;
+    left: 34px;
     transform: none;
   }
 
   .todo-content {
+    grid-column: 1 / -1;
     flex: 1 1 100%;
     margin-top: 38px;
   }
 
   .todo-item > .delete-button {
+    position: absolute;
     top: 8px;
+    right: 8px;
     transform: none;
   }
 
