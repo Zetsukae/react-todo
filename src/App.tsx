@@ -23,6 +23,7 @@ const App = () => {
   const [todos, setTodos] = useState<TodoItems | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<TodoStatusFilter>('all');
   const [sortOrder, setSortOrder] = useState<TodoSortOrder>('default');
 
@@ -44,7 +45,7 @@ const App = () => {
       } catch (error) {
         if (!controller.signal.aborted) {
           console.error('Error fetching todos:', error);
-          setErrorMessage('Unable to load tasks. Please refresh the page.');
+          setLoadError('Unable to load tasks. Please refresh the page.');
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -127,8 +128,11 @@ const App = () => {
       </div>
       <main className="content">
         <ErrorMessage
-          message={errorMessage}
-          onDismiss={() => setErrorMessage(null)}
+          message={errorMessage ?? loadError}
+          onDismiss={() => {
+            setErrorMessage(null);
+            setLoadError(null);
+          }}
         />
         <h1>React*Todo</h1>
         <section className="todo-container">

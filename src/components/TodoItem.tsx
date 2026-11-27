@@ -46,8 +46,9 @@ const TodoItem = ({
       const form = editFormRef.current;
       if (
         form &&
-        event.target instanceof Node &&
-        !form.contains(event.target)
+        event.target instanceof Element &&
+        !form.contains(event.target) &&
+        !event.target.closest('.error-message')
       ) {
         form.requestSubmit();
       }
