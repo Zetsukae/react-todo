@@ -86,6 +86,7 @@
   grid-column: 3;
   box-sizing: border-box;
   width: 100%;
+  padding-right: 70px; /* temporary fix to make the content centered. Will be fix in the future with a better layout for the todo item. */
 }
 
 .todo-content .todo-edit-trigger {
@@ -221,14 +222,6 @@
   margin: 0;
   color: #a4262c;
   font-size: 12px;
-}
-
-.todo-completion-error {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: #a4262c;
-  font-size: 12px;
-  text-align: center;
 }
 
 .item-button {
