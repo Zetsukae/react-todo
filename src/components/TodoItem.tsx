@@ -131,7 +131,16 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     statusFilter === 'all' ||
     (statusFilter === 'done' && todo.done) ||
     (statusFilter === 'undone' && !todo.done);
-  if (!matchesStatusFilter && !isEditing) {
+  const isHidden = !matchesStatusFilter && !isEditing;
+
+  // A hidden item can't play its exit animation, so remove it right away.
+  useEffect(() => {
+    if (isDeleting && isHidden) {
+      removeTodoFromList(todo.id);
+    }
+  }, [isDeleting, isHidden, removeTodoFromList, todo.id]);
+
+  if (isHidden) {
     return null;
   }
 
