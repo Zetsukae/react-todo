@@ -1,21 +1,15 @@
 import './styles/TodoSorts.css';
+import {
+  useFilterStore,
+  useSortOrder,
+  useStatusFilter,
+} from '../store/filterStore';
 
-export type TodoStatusFilter = 'all' | 'done' | 'undone';
-export type TodoSortOrder = 'default' | 'name' | 'due-date';
-
-type TodoSortsProps = {
-  statusFilter: TodoStatusFilter;
-  sortOrder: TodoSortOrder;
-  onStatusFilterChange: (filter: TodoStatusFilter) => void;
-  onSortOrderChange: (sortOrder: TodoSortOrder) => void;
-};
-
-const TodoSorts = ({
-  statusFilter,
-  sortOrder,
-  onStatusFilterChange,
-  onSortOrderChange,
-}: TodoSortsProps) => {
+const TodoSorts = () => {
+  const statusFilter = useStatusFilter();
+  const sortOrder = useSortOrder();
+  const onStatusFilterChange = useFilterStore((state) => state.setStatusFilter);
+  const onSortOrderChange = useFilterStore((state) => state.setSortOrder);
   return (
     <section className="todo-sorts" aria-label="Todo filters and sorting">
       <div className="todo-sort-group" role="group" aria-label="Show">
