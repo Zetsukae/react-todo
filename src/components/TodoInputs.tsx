@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
-import type { Todo, TodoCreate } from '../api/types/todo';
+import type { TodoCreate } from '../api/types/todo';
+import { useTodoStore } from '../store/todoStore';
 import './styles/TodoInputs.css';
 
-type TodoInputsProps = {
-  onCreate: (todo: TodoCreate) => Promise<Todo>;
-  onError: (message: string) => void;
-};
-
-const TodoInputs = ({ onCreate, onError }: TodoInputsProps) => {
+const TodoInputs = () => {
+  const createTodo = useTodoStore((state) => state.createTodo);
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [description, setDescription] = useState('');
@@ -28,16 +25,12 @@ const TodoInputs = ({ onCreate, onError }: TodoInputsProps) => {
     };
 
     setIsSubmitting(true);
-    try {
-      await onCreate(todo);
+    if (await createTodo(todo)) {
       setTitle('');
       setDueDate('');
       setDescription('');
-    } catch {
-      onError('Unable to create task. Please try again.');
-    } finally {
-      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   return (

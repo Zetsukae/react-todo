@@ -1,121 +1,29 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import './App.css';
 
 import TodoInputs from './components/TodoInputs';
 import TodoList from './components/TodoList';
 import TodoSorts from './components/TodoSorts';
 import ErrorMessage from './components/ErrorMessage';
-import type { TodoSortOrder, TodoStatusFilter } from './components/TodoSorts';
 import {
-  createTodo,
-  deleteTodo,
-  getTodos,
-  updateTodo,
-} from './api/services/todoService';
-import type {
-  Todo,
-  TodoCreate,
-  TodoList as TodoItems,
-  TodoUpdate,
-} from './api/types/todo';
+  useErrorMessage,
+  useIsLoadingTodos,
+  useTodoStore,
+  useTodos,
+} from './store/todoStore';
 
 const App = () => {
-  const [todos, setTodos] = useState<TodoItems | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<TodoStatusFilter>('all');
-  const [sortOrder, setSortOrder] = useState<TodoSortOrder>('default');
+  const todos = useTodos();
+  const isLoading = useIsLoadingTodos();
+  const errorMessage = useErrorMessage();
+  const fetchTodos = useTodoStore((state) => state.fetchTodos);
+  const dismissError = useTodoStore((state) => state.dismissError);
 
   useEffect(() => {
     const controller = new AbortController();
-    const loadTodos = async () => {
-      try {
-        const loadedTodos = await getTodos(controller.signal);
-        setTodos((currentTodos) => {
-          if (!currentTodos) {
-            return loadedTodos;
-          }
-          const loadedIds = new Set(loadedTodos.map((todo) => todo.id));
-          return [
-            ...loadedTodos,
-            ...currentTodos.filter((todo) => !loadedIds.has(todo.id)),
-          ];
-        });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          console.error('Error fetching todos:', error);
-          setLoadError('Unable to load tasks. Please refresh the page.');
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-    void loadTodos();
+    void fetchTodos(controller.signal);
     return () => controller.abort();
-  }, []);
-
-  const handleCreateTodo = async (todo: TodoCreate): Promise<Todo> => {
-    setErrorMessage(null);
-    const createdTodo = await createTodo(todo);
-    setTodos((currentTodos) => {
-      const existingTodos = currentTodos ?? [];
-      return existingTodos.some((todo) => todo.id === createdTodo.id)
-        ? existingTodos
-        : [...existingTodos, createdTodo];
-    });
-    return createdTodo;
-  };
-
-  const handleDeleteTodo = async (id: number): Promise<void> => {
-    setErrorMessage(null);
-    await deleteTodo(id);
-    setTodos(
-      (currentTodos) => currentTodos?.filter((todo) => todo.id !== id) ?? null,
-    );
-  };
-
-  const handleUpdateTodo = async (
-    id: number,
-    changes: TodoUpdate,
-  ): Promise<void> => {
-    setErrorMessage(null);
-    const updatedTodo = await updateTodo(id, changes);
-    setTodos(
-      (currentTodos) =>
-        currentTodos?.map((todo) =>
-          todo.id === updatedTodo.id ? updatedTodo : todo,
-        ) ?? null,
-    );
-  };
-
-  const handleTodoDeleted = (id: number) => {
-    setTodos(
-      (currentTodos) => currentTodos?.filter((todo) => todo.id !== id) ?? null,
-    );
-  };
-
-  const sortedTodos = useMemo(() => {
-    return [...(todos ?? [])].sort((first, second) => {
-      if (sortOrder === 'name') {
-        return first.title.localeCompare(second.title, undefined, {
-          sensitivity: 'base',
-        });
-      }
-      if (sortOrder === 'due-date') {
-        if (!first.due_date) {
-          return second.due_date ? 1 : 0;
-        }
-        if (!second.due_date) {
-          return -1;
-        }
-        return first.due_date.localeCompare(second.due_date);
-      }
-      return 0;
-    });
-  }, [todos, sortOrder]);
+  }, [fetchTodos]);
 
   return (
     <>
@@ -127,33 +35,15 @@ const App = () => {
         </div>
       </div>
       <main className="content">
-        <ErrorMessage
-          message={errorMessage ?? loadError}
-          onDismiss={() => {
-            setErrorMessage(null);
-            setLoadError(null);
-          }}
-        />
+        <ErrorMessage message={errorMessage} onDismiss={dismissError} />
         <h1>React*Todo</h1>
         <section className="todo-container">
-          <TodoInputs onCreate={handleCreateTodo} onError={setErrorMessage} />
-          <TodoSorts
-            statusFilter={statusFilter}
-            sortOrder={sortOrder}
-            onStatusFilterChange={setStatusFilter}
-            onSortOrderChange={setSortOrder}
-          />
+          <TodoInputs />
+          <TodoSorts />
           {isLoading ? (
             <div className="loader" role="status" aria-label="Loading todos" />
           ) : todos ? (
-            <TodoList
-              todos={sortedTodos}
-              statusFilter={statusFilter}
-              onUpdate={handleUpdateTodo}
-              onDelete={handleDeleteTodo}
-              onDeleted={handleTodoDeleted}
-              onError={setErrorMessage}
-            />
+            <TodoList />
           ) : null}
         </section>
       </main>

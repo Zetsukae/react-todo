@@ -1,25 +1,39 @@
+import { useMemo } from 'react';
 import TodoItem from './TodoItem';
-import type { TodoList as TodoItems, TodoUpdate } from '../api/types/todo';
+import type { TodoList as TodoItems } from '../api/types/todo';
 import './styles/TodoList.css';
-import type { TodoStatusFilter } from './TodoSorts';
+import type { TodoSortOrder } from '../store/filterStore';
+import { useSortOrder, useStatusFilter } from '../store/filterStore';
+import { useTodos } from '../store/todoStore';
 
-type TodoListProps = {
-  todos: TodoItems;
-  statusFilter: TodoStatusFilter;
-  onUpdate: (id: number, changes: TodoUpdate) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
-  onDeleted: (id: number) => void;
-  onError: (message: string) => void;
-};
+const sortTodos = (todos: TodoItems, sortOrder: TodoSortOrder): TodoItems =>
+  [...todos].sort((first, second) => {
+    if (sortOrder === 'name') {
+      return first.title.localeCompare(second.title, undefined, {
+        sensitivity: 'base',
+      });
+    }
+    if (sortOrder === 'due-date') {
+      if (!first.due_date) {
+        return second.due_date ? 1 : 0;
+      }
+      if (!second.due_date) {
+        return -1;
+      }
+      return first.due_date.localeCompare(second.due_date);
+    }
+    return 0;
+  });
 
-const TodoList = ({
-  todos,
-  statusFilter,
-  onUpdate,
-  onDelete,
-  onDeleted,
-  onError,
-}: TodoListProps) => {
+const TodoList = () => {
+  const storedTodos = useTodos();
+  const statusFilter = useStatusFilter();
+  const sortOrder = useSortOrder();
+  const todos = useMemo(
+    () => sortTodos(storedTodos ?? [], sortOrder),
+    [storedTodos, sortOrder],
+  );
+
   const visibleTodos = todos.filter((todo) => {
     if (statusFilter === 'done') {
       return todo.done;
@@ -42,15 +56,7 @@ const TodoList = ({
           <li className="empty-state">{emptyMessage}</li>
         )}
         {todos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            statusFilter={statusFilter}
-            onUpdate={onUpdate}
-            onDelete={onDelete}
-            onDeleted={onDeleted}
-            onError={onError}
-          />
+          <TodoItem key={todo.id} todo={todo} />
         ))}
       </ul>
       {visibleTodos.length > 0 && (

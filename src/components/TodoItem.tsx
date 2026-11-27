@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, MouseEvent, SubmitEvent } from 'react';
 import './styles/TodoItem.css';
-import type { Todo, TodoUpdate } from '../api/types/todo';
-import type { TodoStatusFilter } from './TodoSorts';
+import type { Todo } from '../api/types/todo';
+import { useStatusFilter } from '../store/filterStore';
+import { useTodoStore } from '../store/todoStore';
 
 type TodoItemProps = {
   todo: Todo;
-  statusFilter: TodoStatusFilter;
-  onUpdate: (id: number, changes: TodoUpdate) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
-  onDeleted: (id: number) => void;
-  onError: (message: string) => void;
 };
 
 const formatDueDate = (dueDate: string): string => {
@@ -18,14 +14,11 @@ const formatDueDate = (dueDate: string): string => {
   return `${day}/${month}/${year.slice(-2)}`;
 };
 
-const TodoItem = ({
-  todo,
-  statusFilter,
-  onUpdate,
-  onDelete,
-  onDeleted,
-  onError,
-}: TodoItemProps) => {
+const TodoItem = ({ todo }: TodoItemProps) => {
+  const statusFilter = useStatusFilter();
+  const updateTodo = useTodoStore((state) => state.updateTodo);
+  const deleteTodo = useTodoStore((state) => state.deleteTodo);
+  const removeTodoFromList = useTodoStore((state) => state.removeTodoFromList);
   const checkboxRef = useRef<HTMLInputElement>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -85,29 +78,21 @@ const TodoItem = ({
 
     setError('');
     setIsUpdating(true);
-    try {
-      await onUpdate(todo.id, {
-        title: trimmedTitle,
-        content: content.trim() || null,
-        due_date: dueDate || null,
-      });
+    const isSaved = await updateTodo(todo.id, {
+      title: trimmedTitle,
+      content: content.trim() || null,
+      due_date: dueDate || null,
+    });
+    if (isSaved) {
       setIsEditing(false);
-    } catch {
-      onError('Unable to update task. Please try again.');
-    } finally {
-      setIsUpdating(false);
     }
+    setIsUpdating(false);
   };
 
   const handleDoneChange = async (done: boolean) => {
     setIsUpdating(true);
-    try {
-      await onUpdate(todo.id, { done });
-    } catch {
-      onError('Unable to update task. Please try again.');
-    } finally {
-      setIsUpdating(false);
-    }
+    await updateTodo(todo.id, { done });
+    setIsUpdating(false);
   };
 
   const handleTodoContentClick = (event: MouseEvent<HTMLDivElement>) => {
@@ -123,14 +108,10 @@ const TodoItem = ({
 
   const handleDelete = async () => {
     setIsPending(true);
-    try {
-      await onDelete(todo.id);
+    if (await deleteTodo(todo.id)) {
       setIsDeleting(true);
-    } catch {
-      onError('Unable to delete task. Please try again.');
-    } finally {
-      setIsPending(false);
     }
+    setIsPending(false);
   };
 
   const handleEditKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -150,7 +131,16 @@ const TodoItem = ({
     statusFilter === 'all' ||
     (statusFilter === 'done' && todo.done) ||
     (statusFilter === 'undone' && !todo.done);
-  if (!matchesStatusFilter && !isEditing) {
+  const isHidden = !matchesStatusFilter && !isEditing;
+
+  // A hidden item can't play its exit animation, so remove it right away.
+  useEffect(() => {
+    if (isDeleting && isHidden) {
+      removeTodoFromList(todo.id);
+    }
+  }, [isDeleting, isHidden, removeTodoFromList, todo.id]);
+
+  if (isHidden) {
     return null;
   }
 
@@ -159,7 +149,7 @@ const TodoItem = ({
       className={`todo-item${todo.due_date || isEditing ? ' todo-item--has-due-date' : ''}${todo.done ? ' todo-item--done' : ''}${isEditing ? ' todo-item--editing' : ''}${isDeleting ? ' todo-item--deleting' : ''}`}
       onAnimationEnd={(event) => {
         if (isDeleting && event.animationName === 'todo-item-exit') {
-          onDeleted(todo.id);
+          removeTodoFromList(todo.id);
         }
       }}
     >
